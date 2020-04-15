@@ -14,6 +14,7 @@ import {
     Text
 } from 'react-native';
 import _ from 'lodash';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class VideoPlayer extends Component {
 
@@ -314,19 +315,19 @@ export default class VideoPlayer extends Component {
         Animated.parallel([
             Animated.timing(
                 this.animations.topControl.opacity,
-                { toValue: 0 }
+                { toValue: 0, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.topControl.marginTop,
-                { toValue: -100 }
+                { toValue: -100, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.bottomControl.opacity,
-                { toValue: 0 }
+                { toValue: 0, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.bottomControl.marginBottom,
-                { toValue: -100 }
+                { toValue: -100, useNativeDriver: false }
             ),
         ]).start();
     }
@@ -340,19 +341,19 @@ export default class VideoPlayer extends Component {
         Animated.parallel([
             Animated.timing(
                 this.animations.topControl.opacity,
-                { toValue: 1 }
+                { toValue: 1, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.topControl.marginTop,
-                { toValue: 0 }
+                { toValue: 0, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.bottomControl.opacity,
-                { toValue: 1 }
+                { toValue: 1, useNativeDriver: false }
             ),
             Animated.timing(
                 this.animations.bottomControl.marginBottom,
-                { toValue: 0 }
+                { toValue: 0, useNativeDriver: false }
             ),
         ]).start();
     }
@@ -369,6 +370,7 @@ export default class VideoPlayer extends Component {
                         toValue: this.animations.loader.MAX_VALUE,
                         duration: 1500,
                         easing: Easing.linear,
+                        useNativeDriver: false
                     }
                 ),
                 Animated.timing(
@@ -377,6 +379,7 @@ export default class VideoPlayer extends Component {
                         toValue: 0,
                         duration: 0,
                         easing: Easing.linear,
+                        useNativeDriver: false
                     }
                 ),
             ]).start( this.loadAnimation.bind( this ) );
@@ -955,6 +958,8 @@ export default class VideoPlayer extends Component {
         const timerControl = this.props.disableTimer ? this.renderNullControl() : this.renderTimer();
         const seekbarControl = this.props.disableSeekbar ? this.renderNullControl() : this.renderSeekbar();
         const playPauseControl = this.props.disablePlayPause ? this.renderNullControl() : this.renderPlayPause();
+        const downloadControl = this.props.disableDownload ? this.renderNullControl() : this.renderDownload();
+        const listControl = this.props.disableList ? this.renderNullControl() : this.renderListButton();
 
         return(
             <Animated.View style={[
@@ -973,10 +978,34 @@ export default class VideoPlayer extends Component {
                       style={[styles.controls.row, styles.controls.bottomControlGroup]}>
                       {playPauseControl}
                       {this.renderTitle()}
+                      {downloadControl}
+                      {listControl}
                       {timerControl}
                     </SafeAreaView>
                 </ImageBackground>
             </Animated.View>
+        );
+    }
+
+    /**
+     * Render the download button
+     */
+    renderDownload() {
+        return this.renderControl(
+            <MaterialCommunityIcons name="file-download-outline" color="#fff" style={{fontSize: 20}} />,
+            this.props.onDownload,
+            styles.controls.playPause
+        );
+    }
+
+    /**
+     * Render the download button
+     */
+    renderListButton() {
+        return this.renderControl(
+            <MaterialCommunityIcons name="content-copy" color="#fff" style={{fontSize: 20}} />,
+            this.props.onList,
+            styles.controls.playPause
         );
     }
 
